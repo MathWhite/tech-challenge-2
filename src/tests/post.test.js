@@ -112,7 +112,7 @@ describe('PUT /posts/:id', () => {
       author: 'Matheus',
     });
     expect(res.statusCode).toBe(200);
-    expect(res.body.title).toBe('New');
+    expect(res.body.title).toBe('Novo título');
   });
 
   it('retorna 404 ao atualizar id inexistente', async () => {
