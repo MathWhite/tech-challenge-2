@@ -39,9 +39,7 @@ const updatePost = async (req, res) => {
         const { title, content, author } = req.body;
         const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: 'ID inválido.' });
-        }
+        console.log('🧪 Recebido:', { id, title, content, author });
 
         const updated = await Post.findByIdAndUpdate(
             id,
@@ -49,10 +47,16 @@ const updatePost = async (req, res) => {
             { new: true }
         );
 
-        if (!updated) return res.status(404).json({ message: 'Post não encontrado.' });
+        if (!updated) {
+            console.warn('⚠️ Post não encontrado para o ID:', id);
+            return res.status(404).json({ message: 'Post não encontrado.' });
+        }
 
+        console.log('✅ Post atualizado:', updated);
         res.json(updated);
+
     } catch (err) {
+        console.error('❌ Erro no update:', err.message);
         res.status(400).json({ message: 'Erro ao atualizar post.' });
     }
 };
