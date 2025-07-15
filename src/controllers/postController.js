@@ -79,7 +79,8 @@ const searchPosts = async (req, res) => {
         const posts = await Post.find({
             $or: [
                 { title: new RegExp(query, 'i') },
-                { content: new RegExp(query, 'i') }
+                { content: new RegExp(query, 'i') },
+                { author: new RegExp(query, 'i') }
             ]
         });
         res.json(posts);
