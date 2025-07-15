@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --runInBand --coverage",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
@@ -15,10 +15,12 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "mongoose": "^8.16.3"
   },
   "devDependencies": {
     "jest": "^30.0.4",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.3"
   }
