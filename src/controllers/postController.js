@@ -37,17 +37,26 @@ const createPost = async (req, res) => {
 const updatePost = async (req, res) => {
     try {
         const { title, content, author } = req.body;
+
+        // Apenas para garantir que o ID é válido:
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'ID inválido' });
+        }
+
         const updated = await Post.findByIdAndUpdate(
             req.params.id,
-            { title, content, author },
+            { title, content, author, updatedAt: Date.now() },
             { new: true }
         );
+
         if (!updated) return res.status(404).json({ message: 'Post não encontrado.' });
         res.json(updated);
+
     } catch (err) {
-        res.status(400).json({ message: 'Erro ao atualizar post.' });
+        res.status(500).json({ message: 'Erro ao atualizar post.' });
     }
 };
+
 // [DELETE] /posts/:id - Excluir post
 const deletePost = async (req, res) => {
     try {
