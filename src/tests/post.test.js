@@ -107,9 +107,9 @@ describe('PUT /posts/:id', () => {
   it('atualiza post existente (200)', async () => {
     const post = await Post.create({ title: 'Old', content: 'B', author: 'M' });
     const res = await request(app).put(`/posts/${post._id}`).send({
-      title: 'New',
-      content: 'B',
-      author: 'M',
+      title: 'Novo título',
+      content: 'Conteúdo atualizado com mais de dez caracteres',
+      author: 'Matheus',
     });
     expect(res.statusCode).toBe(200);
     expect(res.body.title).toBe('New');
@@ -118,9 +118,9 @@ describe('PUT /posts/:id', () => {
   it('retorna 404 ao atualizar id inexistente', async () => {
     const fakeId = new mongoose.Types.ObjectId();
     const res = await request(app).put(`/posts/${fakeId}`).send({
-      title: 'X',
-      content: 'Y',
-      author: 'Z',
+      title: 'Título inexistente',
+      content: 'CAlgum conteúdo válido aqui',
+      author: 'Autor XPTO',
     });
     expect(res.statusCode).toBe(404);
   });
