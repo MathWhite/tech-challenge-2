@@ -3,6 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const postRoutes = require('./routes/postRoutes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const app = express();
 
 // Middleware
@@ -15,6 +17,8 @@ app.get('/teste', (req, res) => {
 
 // Rotas
 app.use('/posts', postRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Conexão com MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

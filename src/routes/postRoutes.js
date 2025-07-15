@@ -4,13 +4,194 @@ const postController = require('../controllers/postController');
 const { postValidationRules } = require('../validators/postValidator');
 const validate = require('../middlewares/validate');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: API para gerenciamento de posts
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       required:
+ *         - title
+ *         - content
+ *         - author
+ *       properties:
+ *         _id:
+ *           type: string
+ *         title:
+ *           type: string
+ *         content:
+ *           type: string
+ *         author:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         readTime:
+ *           type: string
+ *       example:
+ *         _id: 60c72b2f9e7f4c001cf9a7e1
+ *         title: Meu Post
+ *         content: Conteúdo interessante
+ *         author: Matheus
+ *         createdAt: 2023-07-15T10:00:00Z
+ *         updatedAt: 2023-07-15T10:00:00Z
+ *         readTime: 3 min
+ */
+
+/**
+ * @swagger
+ * /posts:
+ *   get:
+ *     summary: Lista todos os posts
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: Lista de posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Post'
+ */
 router.get('/', postController.getAllPosts);
+
+/**
+ * @swagger
+ * /posts/search:
+ *   get:
+ *     summary: Busca posts por título ou conteúdo
+ *     tags: [Posts]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Termo da busca
+ *     responses:
+ *       200:
+ *         description: Resultados da busca
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Post'
+ */
 router.get('/search', postController.searchPosts);
+
+/**
+ * @swagger
+ * /posts/{id}:
+ *   get:
+ *     summary: Retorna um post pelo ID
+ *     tags: [Posts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post
+ *     responses:
+ *       200:
+ *         description: Post encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       404:
+ *         description: Post não encontrado
+ */
 router.get('/:id', postController.getPostById);
 
+/**
+ * @swagger
+ * /posts:
+ *   post:
+ *     summary: Cria um novo post
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     responses:
+ *       201:
+ *         description: Post criado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       400:
+ *         description: Dados inválidos
+ */
 router.post('/', postValidationRules, validate, postController.createPost);
+
+/**
+ * @swagger
+ * /posts/{id}:
+ *   put:
+ *     summary: Atualiza um post existente
+ *     tags: [Posts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     responses:
+ *       200:
+ *         description: Post atualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       400:
+ *         description: Dados inválidos
+ *       404:
+ *         description: Post não encontrado
+ */
 router.put('/:id', postValidationRules, validate, postController.updatePost);
 
+/**
+ * @swagger
+ * /posts/{id}:
+ *   delete:
+ *     summary: Exclui um post
+ *     tags: [Posts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post
+ *     responses:
+ *       200:
+ *         description: Post excluído
+ *       404:
+ *         description: Post não encontrado
+ */
 router.delete('/:id', postController.deletePost);
 
 module.exports = router;

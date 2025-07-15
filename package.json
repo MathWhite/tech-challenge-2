@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest --runInBand --coverage",
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "seed": "node src/seeds/postSeed.js"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +17,9 @@
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
-    "mongoose": "^8.16.3"
+    "mongoose": "^8.16.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "jest": "^30.0.4",
