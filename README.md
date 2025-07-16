@@ -80,6 +80,7 @@ A documentação inclui:
 
 ## 🛠️ Estrutura do Projeto
 
+```
 .
 ├── src
 │   ├── config
@@ -98,6 +99,7 @@ A documentação inclui:
 ├── Dockerfile
 ├── docker-compose.yml
 ├── README.md
+```
 
 ## 🧪 CI com GitHub Actions
 
