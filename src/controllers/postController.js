@@ -3,7 +3,11 @@ const Post = require('../models/Post');
 // [GET] /posts - Lista todos os posts
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({ createdAt: -1 });
+        const isProfessor = req.user?.role === 'professor';
+        const query = isProfessor ? {} : { isActive: true };
+        console.log('Usuário autenticado:', req.user);
+
+        const posts = await Post.find(query).sort({ createdAt: -1 });
         res.json(posts);
     } catch (err) {
         res.status(500).json({ message: 'Erro ao buscar posts.' });
@@ -13,8 +17,20 @@ const getAllPosts = async (req, res) => {
 // [GET] /posts/:id - Post por ID
 const getPostById = async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id);
-        if (!post) return res.status(404).json({ message: 'Post não encontrado.' });
+        const { id } = req.params;
+        const isProfessor = req.user?.role === 'professor';
+
+        const filter = { _id: id };
+        if (!isProfessor) {
+            filter.isActive = true;
+        }
+
+        const post = await Post.findOne(filter);
+
+        if (!post) {
+            return res.status(404).json({ message: 'Post não encontrado.' });
+        }
+
         res.json(post);
     } catch (err) {
         res.status(500).json({ message: 'Erro ao buscar post.' });
@@ -24,8 +40,11 @@ const getPostById = async (req, res) => {
 // [POST] /posts - Criar novo post
 const createPost = async (req, res) => {
     try {
-        const { title, content, author } = req.body;
-        const newPost = new Post({ title, content, author });
+        if (req.user?.role !== 'professor') {
+            return res.status(401).json({ message: 'Acesso restrito a professores.' });
+        }
+        const { title, content, author, isActive, readTime } = req.body;
+        const newPost = new Post({ title, content, author, isActive, readTime });
         await newPost.save();
         res.status(201).json(newPost);
     } catch (err) {
@@ -36,14 +55,17 @@ const createPost = async (req, res) => {
 // [PUT] /posts/:id - Atualizar post
 const updatePost = async (req, res) => {
     try {
-        const { title, content, author } = req.body;
+        if (req.user?.role !== 'professor') {
+            return res.status(401).json({ message: 'Acesso restrito a professores.' });
+        }
+        const { title, content, author, isActive, readTime } = req.body;
         const { id } = req.params;
 
-        console.log('🧪 Recebido:', { id, title, content, author });
+        console.log('🧪 Recebido:', { id, title, content, author, isActive, readTime });
 
         const updated = await Post.findByIdAndUpdate(
             id,
-            { title, content, author, updatedAt: Date.now() },
+            { title, content, author, updatedAt: Date.now(), isActive, readTime },
             { new: true }
         );
 
@@ -64,6 +86,9 @@ const updatePost = async (req, res) => {
 // [DELETE] /posts/:id - Excluir post
 const deletePost = async (req, res) => {
     try {
+        if (req.user?.role !== 'professor') {
+            return res.status(401).json({ message: 'Acesso restrito a professores.' });
+        }
         const deleted = await Post.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ message: 'Post não encontrado.' });
         res.json({ message: 'Post excluído com sucesso.' });
@@ -75,6 +100,9 @@ const deletePost = async (req, res) => {
 // [GET] /posts/search?q=termo - Busca
 const searchPosts = async (req, res) => {
     try {
+        if (req.user?.role !== 'professor') {
+            return res.status(401).json({ message: 'Acesso restrito a professores.' });
+        }
         const query = req.query.q;
         const posts = await Post.find({
             $or: [

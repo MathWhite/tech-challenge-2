@@ -3,6 +3,7 @@ const router = express.Router();
 const postController = require('../controllers/postController');
 const { postValidationRules } = require('../validators/postValidator');
 const validate = require('../middlewares/validate');
+const auth = require('../middlewares/auth');
 
 /**
  * @swagger
@@ -64,7 +65,7 @@ const validate = require('../middlewares/validate');
  *               items:
  *                 $ref: '#/components/schemas/Post'
  */
-router.get('/', postController.getAllPosts);
+router.get('/', auth(), postController.getAllPosts);
 
 /**
  * @swagger
@@ -89,7 +90,7 @@ router.get('/', postController.getAllPosts);
  *               items:
  *                 $ref: '#/components/schemas/Post'
  */
-router.get('/search', postController.searchPosts);
+router.get('/search', auth(), postController.searchPosts);
 
 /**
  * @swagger
@@ -114,7 +115,7 @@ router.get('/search', postController.searchPosts);
  *       404:
  *         description: Post não encontrado
  */
-router.get('/:id', postController.getPostById);
+router.get('/:id', auth(), postController.getPostById);
 
 /**
  * @swagger
@@ -138,7 +139,7 @@ router.get('/:id', postController.getPostById);
  *       400:
  *         description: Dados inválidos
  */
-router.post('/', postValidationRules, validate, postController.createPost);
+router.post('/', auth(), postValidationRules, validate, postController.createPost);
 
 /**
  * @swagger
@@ -171,7 +172,7 @@ router.post('/', postValidationRules, validate, postController.createPost);
  *       404:
  *         description: Post não encontrado
  */
-router.put('/:id', postValidationRules, validate, postController.updatePost);
+router.put('/:id', auth(), postValidationRules, validate, postController.updatePost);
 
 /**
  * @swagger
@@ -192,6 +193,6 @@ router.put('/:id', postValidationRules, validate, postController.updatePost);
  *       404:
  *         description: Post não encontrado
  */
-router.delete('/:id', postController.deletePost);
+router.delete('/:id', auth(), postController.deletePost);
 
 module.exports = router;

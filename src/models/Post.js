@@ -24,7 +24,12 @@ const PostSchema = new mongoose.Schema({
     default: Date.now,
   },
   readTime: {
-    type: String
+    type: String,
+    default: ""
+  },
+  isActive: {
+    type: Boolean,
+    default: true
   },
 });
 
