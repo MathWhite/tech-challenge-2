@@ -79,10 +79,10 @@ A documentação inclui:
 | GET    | /posts/search?q=   | Busca por título, conteúdo ou autor |
 
 ## 🛠️ Estrutura do Projeto
+
 .
 ├── src
-
-|   ├── config
+│   ├── config
 │   ├── controllers
 │   ├── middlewares
 │   ├── models
@@ -91,7 +91,8 @@ A documentação inclui:
 │   ├── tests
 │   ├── validators
 │   └── index.js
-├── .github/workflows
+├── .github
+│   └── workflows
 ├── .env
 ├── coverage
 ├── Dockerfile
