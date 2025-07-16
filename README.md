@@ -66,6 +66,18 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicHJvZmVzc29yIiwibmFtZSI6
 Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiTWF0aGV1cyIsImlhdCI6MTc1MjY2ODMzNn0.G6i94pkpNQQ5o-7pLpmNdSMbj1FfWpoBYn2U0oMBusU
 ```
 
+---
+
+⚠️ **Atenção:** Em um ambiente de produção, **jamais compartilhe ou exponha tokens sensíveis** publicamente. Esta abordagem foi adotada aqui apenas para fins educacionais e de correção da atividade.
+
+- O token de **professor** funciona como uma **credencial administrativa**, com acesso total a todas as rotas da API (`GET`, `POST`, `PUT`, `DELETE`, `SEARCH`), incluindo visualização de posts inativos.
+
+- O token de **aluno** possui **acesso restrito** apenas às rotas:
+  - `GET /posts` → Retorna **apenas posts ativos**
+  - `GET /posts/:id` → Retorna o post apenas se estiver **ativo**
+
+Todos os demais endpoints retornarão `401 Unauthorized` quando acessados com o token de aluno.
+
 
 ## 🧪 Testes Automatizados
 
