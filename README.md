@@ -79,9 +79,9 @@ A documentação inclui:
 | GET    | /posts/search?q=   | Busca por título, conteúdo ou autor |
 
 ## 🛠️ Estrutura do Projeto
-
 .
 ├── src
+
 |   ├── config
 │   ├── controllers
 │   ├── middlewares
