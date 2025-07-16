@@ -25,28 +25,39 @@ const auth = require('../middlewares/auth');
  *       properties:
  *         _id:
  *           type: string
+ *           description: ID único do post
  *         title:
  *           type: string
+ *           description: Título do post
  *         content:
  *           type: string
+ *           description: Conteúdo do post
  *         author:
  *           type: string
+ *           description: Autor do post
+ *         isActive:
+ *           type: boolean
+ *           description: Indica se o post está ativo (visível para alunos)
+ *         readTime:
+ *           type: string
+ *           description: Tempo estimado de leitura
  *         createdAt:
  *           type: string
  *           format: date-time
+ *           description: Data de criação
  *         updatedAt:
  *           type: string
  *           format: date-time
- *         readTime:
- *           type: string
+ *           description: Data da última atualização
  *       example:
  *         _id: 60c72b2f9e7f4c001cf9a7e1
  *         title: Meu Post
  *         content: Conteúdo interessante
  *         author: Matheus
+ *         isActive: true
+ *         readTime: 3 min
  *         createdAt: 2023-07-15T10:00:00Z
  *         updatedAt: 2023-07-15T10:00:00Z
- *         readTime: 3 min
  */
 
 /**
