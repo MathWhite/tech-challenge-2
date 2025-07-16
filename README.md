@@ -17,6 +17,7 @@ A solução foi originalmente desenvolvida com OutSystems e agora está sendo re
 - Jest + Supertest
 - express-validator
 - GitHub Actions
+- Jsonwebtoken
 
 ## 📦 Instalação e Uso
 
