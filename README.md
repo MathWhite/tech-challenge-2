@@ -63,7 +63,9 @@ A cobertura atual está acima de 80%, com foco em criação, edição, leitura e
 
 Swagger disponível em:
 
+```
 GET /api-docs
+```
 
 Exemplo: http://localhost:3000/api-docs (assumindo que PORT em .env seja 3000)
 
@@ -113,7 +115,7 @@ Workflow configurado para:
 - Rodar testes automatizados
 - Verificar cobertura mínima
 
-Arquivo: .github/workflows/test.yml
+> Arquivo: .github/workflows/test.yml
 
 ## 📹 Apresentação (em andamento)
 
