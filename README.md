@@ -93,7 +93,7 @@ Todos os demais endpoints retornarão `401 Unauthorized` quando acessados com o 
 npm test
 ```
 
-A cobertura atual está acima de 80%, com foco em criação, edição, leitura e exclusão de posts.
+A cobertura atual está em 100%, com foco em criação, edição, leitura e exclusão de posts.
 
 ## 🔍 Documentação da API
 
