@@ -28,28 +28,36 @@ A solução foi originalmente desenvolvida com OutSystems e agora está sendo re
 
 ### 💻 Clonando o projeto
 
-git clone https://github.com/seu-usuario/seu-repo.git
-cd seu-repo
+```
+git clone https://github.com/MathWhite/tech-challenge-2.git
+cd tech-challenge-2
 npm install
+```
 
 ### ▶️ Rodando localmente (sem Docker)
 
-cp .env.example .env
+```bash
+cp .env.example .env #Edite o .env
 npm run dev
+```
 
 A aplicação estará disponível em: http://localhost:3000
 Assumindo que PORT em .env seja 3000
 
 ### 🐳 Rodando com Docker
 
+```bash
 docker-compose up --build
-
+```
 Acesse em: http://localhost:3000
 Assumindo que PORT em .env seja 3000
 
+
 ## 🧪 Testes Automatizados
 
+```bash
 npm test
+```
 
 A cobertura atual está acima de 80%, com foco em criação, edição, leitura e exclusão de posts.
 
@@ -120,7 +128,7 @@ Vídeo demonstrando:
 
 Link será adicionado em breve.
 
-## 🤝 Colaboradores
+## 🤝 Colaborador
 
 - Matheus Carvalho
 
