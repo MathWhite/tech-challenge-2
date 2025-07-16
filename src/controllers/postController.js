@@ -5,7 +5,6 @@ const getAllPosts = async (req, res) => {
     try {
         const isProfessor = req.user?.role === 'professor';
         const query = isProfessor ? {} : { isActive: true };
-        console.log('Usuário autenticado:', req.user);
 
         const posts = await Post.find(query).sort({ createdAt: -1 });
         res.json(posts);
