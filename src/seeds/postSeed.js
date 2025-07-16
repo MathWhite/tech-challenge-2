@@ -22,7 +22,7 @@ const seedPosts = [
 
 async function seed() {
   try {
-    await mongoose.connect(process.env.MONGO_URL);
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('🔗 Conectado ao MongoDB');
 
     await Post.deleteMany(); // limpa

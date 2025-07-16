@@ -18,7 +18,7 @@ services:
       - .:/app
       - /app/node_modules
     env_file:
-      - .env
+      - .env.docker
     depends_on:
       - mongo
     restart: unless-stopped
