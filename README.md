@@ -24,8 +24,17 @@ A solução foi originalmente desenvolvida com OutSystems e agora está sendo re
 ### ✅ Requisitos
 
 - Node.js 18+
-- Docker e Docker Compose
+- Docker e Docker Compose (ou MongoDB local instalado)
 - Git
+
+### 🔍 Verificando requisitos
+
+```bash
+node -v            # Deve retornar v18.x ou superior
+docker -v          # Deve retornar versão instalada do Docker
+docker-compose -v  # Deve retornar versão instalada do Docker Compose
+git --version      # Deve retornar versão do Git
+```
 
 ### 💻 Clonando o projeto
 
@@ -38,9 +47,9 @@ npm install
 ### ▶️ Rodando localmente (sem Docker)
 
 ```bash
-cp .env.example .env #Edite o .env
 npm run dev
 ```
+> *Obs:* Você deve ter mongo rodando na sua máquina, caso contrário a conexão local irá falhar.
 
 A aplicação estará disponível em: http://localhost:3000 (assumindo que PORT em .env seja 3000)
 

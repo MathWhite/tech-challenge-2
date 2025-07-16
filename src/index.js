@@ -20,16 +20,12 @@ app.use('/posts', postRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Conexão com MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB conectado'))
     .catch((err) => {
         console.error('Erro ao conectar no MongoDB:', err);
         process.exit(1); // encerra se falhar
     });
-console.log('MONGO_URI:', process.env.MONGO_URI);
 
 // Start do servidor
 const PORT = process.env.PORT || 3000;
