@@ -41,16 +41,14 @@ cp .env.example .env #Edite o .env
 npm run dev
 ```
 
-A aplicação estará disponível em: http://localhost:3000
-Assumindo que PORT em .env seja 3000
+A aplicação estará disponível em: http://localhost:3000 (assumindo que PORT em .env seja 3000)
 
 ### 🐳 Rodando com Docker
 
 ```bash
 docker-compose up --build
 ```
-Acesse em: http://localhost:3000
-Assumindo que PORT em .env seja 3000
+Acesse em: http://localhost:3000 (assumindo que PORT em .env seja 3000)
 
 
 ## 🧪 Testes Automatizados
@@ -67,8 +65,7 @@ Swagger disponível em:
 
 GET /api-docs
 
-Exemplo: http://localhost:3000/api-docs
-Assumindo que PORT em .env seja 3000
+Exemplo: http://localhost:3000/api-docs (assumindo que PORT em .env seja 3000)
 
 A documentação inclui:
 - Esquemas de request/response
