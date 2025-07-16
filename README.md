@@ -66,8 +66,6 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicHJvZmVzc29yIiwibmFtZSI6
 Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiTWF0aGV1cyIsImlhdCI6MTc1MjY2ODMzNn0.G6i94pkpNQQ5o-7pLpmNdSMbj1FfWpoBYn2U0oMBusU
 ```
 
----
-
 ⚠️ **Atenção:** Em um ambiente de produção, **jamais compartilhe ou exponha tokens sensíveis** publicamente. Esta abordagem foi adotada aqui apenas para fins educacionais e de correção da atividade.
 
 - O token de **professor** funciona como uma **credencial administrativa**, com acesso total a todas as rotas da API (`GET`, `POST`, `PUT`, `DELETE`, `SEARCH`), incluindo visualização de posts inativos.
