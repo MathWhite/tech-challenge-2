@@ -48,7 +48,7 @@ const createPost = async (req, res) => {
         await newPost.save();
         res.status(201).json(newPost);
     } catch (err) {
-        res.status(400).json({ message: 'Erro ao criar post.' });
+        res.status(500).json({ message: 'Erro ao criar post.' });
     }
 };
 
@@ -60,26 +60,17 @@ const updatePost = async (req, res) => {
         }
         const { title, content, author, isActive, readTime } = req.body;
         const { id } = req.params;
-
-        console.log('🧪 Recebido:', { id, title, content, author, isActive, readTime });
-
         const updated = await Post.findByIdAndUpdate(
             id,
             { title, content, author, updatedAt: Date.now(), isActive, readTime },
             { new: true }
         );
-
         if (!updated) {
-            console.warn('⚠️ Post não encontrado para o ID:', id);
             return res.status(404).json({ message: 'Post não encontrado.' });
         }
-
-        console.log('✅ Post atualizado:', updated);
         res.json(updated);
-
     } catch (err) {
-        console.error('❌ Erro no update:', err.message);
-        res.status(400).json({ message: 'Erro ao atualizar post.' });
+        res.status(500).json({ message: 'Erro ao atualizar post.' });
     }
 };
 
