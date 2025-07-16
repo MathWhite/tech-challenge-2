@@ -1,7 +1,3 @@
-/**
- * Testes completos da API /posts
- * Usa mongodb-memory-server para rodar MongoDB em memória.
- */
 const request = require('supertest');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');

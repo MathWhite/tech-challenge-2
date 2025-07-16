@@ -1,4 +1,4 @@
-// src/config/swagger.js
+require('dotenv').config();
 const swaggerJSDoc = require('swagger-jsdoc');
 
 const options = {
@@ -11,8 +11,22 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: `http://localhost:${process.env.PORT || 3000}`,
         description: 'Servidor local',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },

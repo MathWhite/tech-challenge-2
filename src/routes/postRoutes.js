@@ -55,6 +55,8 @@ const auth = require('../middlewares/auth');
  *   get:
  *     summary: Lista todos os posts
  *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de posts
@@ -73,6 +75,8 @@ router.get('/', auth(), postController.getAllPosts);
  *   get:
  *     summary: Busca posts por título ou conteúdo
  *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: q
@@ -98,6 +102,8 @@ router.get('/search', auth(), postController.searchPosts);
  *   get:
  *     summary: Retorna um post pelo ID
  *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -123,6 +129,8 @@ router.get('/:id', auth(), postController.getPostById);
  *   post:
  *     summary: Cria um novo post
  *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -147,6 +155,8 @@ router.post('/', auth(), postValidationRules, validate, postController.createPos
  *   put:
  *     summary: Atualiza um post existente
  *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -180,6 +190,8 @@ router.put('/:id', auth(), postValidationRules, validate, postController.updateP
  *   delete:
  *     summary: Exclui um post
  *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
