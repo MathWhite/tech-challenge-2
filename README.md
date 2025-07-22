@@ -151,7 +151,7 @@ Workflow configurado para:
 - Rodar testes automatizados
 - Verificar cobertura mínima
 
-> Arquivo: .github/workflows/test.yml
+> Arquivo: .github/workflows/ci.yml
 
 ## 📹 Apresentação (em andamento)
 
