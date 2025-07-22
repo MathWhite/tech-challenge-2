@@ -1,4 +1,4 @@
-name: CI - Tech Challenge Blog API
+name: CI/CD - Tech Challenge Blog API
 
 on:
   push:
@@ -34,11 +34,18 @@ jobs:
         run: npm install
 
       - name: ⏳ Esperar MongoDB iniciar
-        run: |
-          echo "Aguardando Mongo iniciar..."
-          sleep 10
+        run: sleep 10
 
       - name: 🧪 Rodar testes com cobertura
         env:
           MONGO_URI: mongodb://localhost:27017/tech_challenge_test
         run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && success()
+    steps:
+      - name: 🚀 Disparar Deploy no Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
