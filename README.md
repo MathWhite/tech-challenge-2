@@ -128,6 +128,7 @@ A documentação inclui:
 ├── src
 │   ├── config
 │   ├── controllers
+|   ├── docs
 │   ├── middlewares
 │   ├── models
 │   ├── routes
@@ -166,6 +167,14 @@ Link será adicionado em breve.
 ## 🤝 Colaborador
 
 - Matheus Carvalho
+
+## 📄 Documentação Técnica Complementar
+
+Documentações adicionais exigidas pelo Tech Challenge estão disponíveis na pasta [`/src/docs`](./src/docs), incluindo:
+
+- [`arquitetura.md`](./src/docs/arquitetura.md) – Explicação da estrutura e arquitetura da aplicação
+- [`relato.md`](./src/docs/relato.md) – Relato de experiências, aprendizados e desafios enfrentados durante o desenvolvimento
+
 
 ## 🏁 Conclusão
 
