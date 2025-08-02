@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1752679324396" clover="3.2.0">
-  <project timestamp="1752679324396" name="All files">
+<coverage generated="1754147331809" clover="3.2.0">
+  <project timestamp="1754147331810" name="All files">
     <metrics statements="93" coveredstatements="93" conditionals="22" coveredconditionals="22" methods="9" coveredmethods="9" elements="124" coveredelements="124" complexity="0" loc="93" ncloc="93" packages="5" files="6" classes="6"/>
     <package name="controllers">
       <metrics statements="57" coveredstatements="57" conditionals="18" coveredconditionals="18" methods="6" coveredmethods="6"/>
-      <file name="postController.js" path="/home/math-wsl/TEMP/tech-challenge/src/controllers/postController.js">
+      <file name="postController.js" path="/home/matheus-pop/TEMP/FIAP/demonstracao/tech-challenge-2/src/controllers/postController.js">
         <metrics statements="57" coveredstatements="57" conditionals="18" coveredconditionals="18" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
@@ -67,7 +67,7 @@
     </package>
     <package name="middlewares">
       <metrics statements="17" coveredstatements="17" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
-      <file name="auth.js" path="/home/math-wsl/TEMP/tech-challenge/src/middlewares/auth.js">
+      <file name="auth.js" path="/home/matheus-pop/TEMP/FIAP/demonstracao/tech-challenge-2/src/middlewares/auth.js">
         <metrics statements="11" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="6" type="stmt"/>
@@ -81,7 +81,7 @@
         <line num="15" count="1" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
       </file>
-      <file name="validate.js" path="/home/math-wsl/TEMP/tech-challenge/src/middlewares/validate.js">
+      <file name="validate.js" path="/home/matheus-pop/TEMP/FIAP/demonstracao/tech-challenge-2/src/middlewares/validate.js">
         <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -93,7 +93,7 @@
     </package>
     <package name="models">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="Post.js" path="/home/math-wsl/TEMP/tech-challenge/src/models/Post.js">
+      <file name="Post.js" path="/home/matheus-pop/TEMP/FIAP/demonstracao/tech-challenge-2/src/models/Post.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -102,7 +102,7 @@
     </package>
     <package name="routes">
       <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="postRoutes.js" path="/home/math-wsl/TEMP/tech-challenge/src/routes/postRoutes.js">
+      <file name="postRoutes.js" path="/home/matheus-pop/TEMP/FIAP/demonstracao/tech-challenge-2/src/routes/postRoutes.js">
         <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -121,7 +121,7 @@
     </package>
     <package name="validators">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="postValidator.js" path="/home/math-wsl/TEMP/tech-challenge/src/validators/postValidator.js">
+      <file name="postValidator.js" path="/home/matheus-pop/TEMP/FIAP/demonstracao/tech-challenge-2/src/validators/postValidator.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
