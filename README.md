@@ -78,7 +78,7 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiTWF0
 
 ⚠️ **Atenção:** Em um ambiente de produção, **jamais compartilhe ou exponha tokens sensíveis** publicamente. Esta abordagem foi adotada aqui apenas para fins educacionais e de correção da atividade.
 
-- O token de **professor** funciona como uma **credencial administrativa**, com acesso total a todas as rotas da API (`GET`, `POST`, `PUT`, `DELETE`, `SEARCH`), incluindo visualização de posts inativos.
+- O token de **professor** funciona como uma **credencial administrativa**, com acesso total a todas as rotas da API (`GET`, `POST`, `PUT`, `DELETE`), incluindo visualização de posts inativos.
 
 - O token de **aluno** possui **acesso restrito** apenas às rotas:
   - `GET /posts` → Retorna **apenas posts ativos**
@@ -154,15 +154,24 @@ Workflow configurado para:
 
 > Arquivo: .github/workflows/ci.yml
 
-## 📹 Apresentação (em andamento)
+## 📹 Apresentação
 
 Vídeo demonstrando:
 - Objetivo da aplicação
 - Uso prático das rotas
 - Funcionamento do Docker
-- Testes e CI funcionando
+- Testes, CI e CD funcionando
 
-Link será adicionado em breve.
+[Acesse o video aqui (Google Drive)](https://drive.google.com/file/d/1_7IbJ-b5s561fUGn2FkuRk9H1Va6K9oO/view?usp=sharing)
+
+## 📄 Render
+
+Acesse o projeto em PRD através do Render.
+
+```bash
+BaseUrl: https://tech-challenge-edn9.onrender.com
+Sweagger: https://tech-challenge-edn9.onrender.com/api-docs
+```
 
 ## 🤝 Colaborador
 
@@ -179,3 +188,7 @@ Documentações adicionais exigidas pelo Tech Challenge estão disponíveis na p
 ## 🏁 Conclusão
 
 Este projeto foi desenvolvido com foco em entregar uma solução real e escalável para professores da rede pública, aplicando práticas modernas de desenvolvimento, testes e documentação.
+
+## 📝 Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
