@@ -49,7 +49,7 @@ npm install
 ### ▶️ Rodando localmente (sem Docker)
 
 ```bash
-npm run dev
+npm start
 ```
 > *Obs:* Você deve ter mongo rodando na sua máquina, caso contrário a conexão local irá falhar.
 
