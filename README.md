@@ -147,12 +147,13 @@ A documentação inclui:
 ├── README.md
 ```
 
-## 🧪 CI com GitHub Actions
+## 🧪 CI e CD com GitHub Actions
 
 Workflow configurado para:
 - Instalar dependências
 - Rodar testes automatizados
 - Verificar cobertura mínima
+- Faz o Deploy da aplicação no Render
 
 > Arquivo: .github/workflows/ci.yml
 
