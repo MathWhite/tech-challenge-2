@@ -44,6 +44,8 @@ cd tech-challenge-2
 npm install
 ```
 
+> *Nota*: Não se esqueça de criar um arquivo .env na raiz do projeto, copiando o conteúdo de .env.example
+
 ### ▶️ Rodando localmente (sem Docker)
 
 ```bash
@@ -128,7 +130,7 @@ A documentação inclui:
 ├── src
 │   ├── config
 │   ├── controllers
-|   ├── docs
+│   ├── docs
 │   ├── middlewares
 │   ├── models
 │   ├── routes
