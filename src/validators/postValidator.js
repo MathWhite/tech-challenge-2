@@ -30,4 +30,21 @@ const postValidationRules = [
         .withMessage('Conteúdo do comentário é obrigatório')
 ];
 
-module.exports = { postValidationRules };
+// Validador para adicionar comentário
+const commentValidationRules = [
+    body('comment')
+        .trim()
+        .notEmpty()
+        .withMessage('Conteúdo do comentário é obrigatório')
+        .isLength({ min: 1, max: 1000 })
+        .withMessage('Comentário deve ter entre 1 e 1000 caracteres')
+];
+
+// Validador para atualizar comentário (mesma regra)
+const updateCommentValidationRules = commentValidationRules;
+
+module.exports = { 
+    postValidationRules,
+    commentValidationRules,
+    updateCommentValidationRules
+};

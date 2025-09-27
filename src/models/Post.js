@@ -26,6 +26,12 @@ const PostSchema = new mongoose.Schema({
       required: true,
       trim: true
     },
+    role: {
+      type: String,
+      required: false,
+      enum: ['aluno', 'professor'],
+      trim: true
+    },
     comment: {
       type: String,
       required: true

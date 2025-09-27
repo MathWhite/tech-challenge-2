@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
-const { postValidationRules } = require('../validators/postValidator');
+const { postValidationRules, commentValidationRules, updateCommentValidationRules } = require('../validators/postValidator');
 const validate = require('../middlewares/validate');
 const auth = require('../middlewares/auth');
 
@@ -241,5 +241,140 @@ router.put('/:id', auth(), postValidationRules, validate, postController.updateP
  *         description: Post não encontrado
  */
 router.delete('/:id', auth(), postController.deletePost);
+
+/**
+ * @swagger
+ * /posts/{id}/comments:
+ *   post:
+ *     summary: Adiciona um comentário ao post
+ *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - comment
+ *             properties:
+ *               comment:
+ *                 type: string
+ *                 description: Conteúdo do comentário
+ *             example:
+ *               comment: "Comentário teste"
+ *     responses:
+ *       201:
+ *         description: Comentário adicionado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       400:
+ *         description: Dados inválidos
+ *       404:
+ *         description: Post não encontrado
+ */
+router.post('/:id/comments', auth(), commentValidationRules, validate, postController.addComment);
+
+/**
+ * @swagger
+ * /posts/{id}/comments/{commentId}:
+ *   put:
+ *     summary: Atualiza um comentário específico
+ *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do comentário
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - comment
+ *             properties:
+ *               comment:
+ *                 type: string
+ *                 description: Novo conteúdo do comentário
+ *             example:
+ *               comment: "Comentário atualizado"
+ *     responses:
+ *       200:
+ *         description: Comentário atualizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       400:
+ *         description: Dados inválidos
+ *       403:
+ *         description: Sem permissão para atualizar este comentário
+ *       404:
+ *         description: Post ou comentário não encontrado
+ */
+router.put('/:id/comments/:commentId', auth(), updateCommentValidationRules, validate, postController.updateComment);
+
+/**
+ * @swagger
+ * /posts/{id}/comments/{commentId}:
+ *   delete:
+ *     summary: Remove um comentário específico
+ *     tags: [Posts]
+ *     security:
+ *      - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do comentário
+ *     responses:
+ *       200:
+ *         description: Comentário removido com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Comentário deletado com sucesso."
+ *                 post:
+ *                   $ref: '#/components/schemas/Post'
+ *       403:
+ *         description: Sem permissão para deletar este comentário
+ *       404:
+ *         description: Post ou comentário não encontrado
+ */
+router.delete('/:id/comments/:commentId', auth(), postController.deleteComment);
 
 module.exports = router;

@@ -16,7 +16,7 @@ let mongoServer;
 
 process.env.JWT_SECRET = 'secreta123';
 const tokenProfessor = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicHJvZmVzc29yIiwibmFtZSI6Ik1hdGhldXMiLCJpYXQiOjE3NTI2NjgzMzZ9.BQUrflZw8QktIBmqOVWiPvu0jDowJl_-SiBr9yCyPv0';
-const tokenAluno = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiTWF0aGV1cyIsImlhdCI6MTc1MjY2ODMzNn0.G6i94pkpNQQ5o-7pLpmNdSMbj1FfWpoBYn2U0oMBusU';
+const tokenAluno = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiUGVkcm8iLCJpYXQiOjE3NTkwMDI5MDd9.j11EStIjOvOBVOwg9FDcr-Fu4dzbETn1xIFjUd7Lip0';
 
 
 /* -------------------------------------------------------------------------- */
@@ -62,6 +62,7 @@ describe('POST /posts', () => {
         description: 'Uma descrição do post',
         comments: [{
           author: 'João',
+          role: 'aluno',
           comment: 'Muito bom!'
         }]
       });
@@ -184,7 +185,7 @@ describe('GET /posts/:id', () => {
       content: 'B', 
       author: 'M', 
       description: 'Desc A', 
-      comments: [{author: 'João', comment: 'Ótimo!'}] 
+      comments: [{author: 'João', role: 'aluno', comment: 'Ótimo!'}] 
     });
     const res = await request(app).get(`/posts/${post._id}`).set('Authorization', `Bearer ${tokenProfessor}`);
     expect(res.statusCode).toBe(200);
@@ -268,8 +269,8 @@ describe('PUT /posts/:id', () => {
     expect(res.body.title).toBe('Novo título');
     expect(res.body.isActive).toBe(false);
     expect(res.body.description).toBe('Nova descrição');
-    expect(res.body.comments).toHaveLength(1);
-    expect(res.body.comments[0].author).toBe('Pedro');
+    // Comments devem ser ignorados no PUT, então o array permanece vazio
+    expect(res.body.comments).toHaveLength(0);
   });
 
   it('retorna 404 ao atualizar id inexistente', async () => {
@@ -500,10 +501,12 @@ describe('Novos campos - description e comments', () => {
         comments: [
           {
             author: 'João',
+            role: 'aluno',
             comment: 'Primeiro comentário'
           },
           {
             author: 'Maria',
+            role: 'professor',
             comment: 'Segundo comentário'
           }
         ]
@@ -570,6 +573,362 @@ describe('Middleware de autenticação e catch de erros', () => {
 
     expect(res.statusCode).toBe(401);
     expect(res.body.message).toBe('Token não fornecido.');
+  });
+
+});
+
+/* -------------------------------------------------------------------------- */
+/*  Testes para os novos endpoints de comentários                           */
+/* -------------------------------------------------------------------------- */
+
+describe('Endpoints de comentários', () => {
+  let postId;
+
+  beforeEach(async () => {
+    await Post.deleteMany();
+    const post = await Post.create({
+      title: 'Post para comentários',
+      content: 'Conteúdo do post',
+      author: 'Autor Teste',
+      description: 'Descrição para teste'
+    });
+    postId = post._id.toString();
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*  POST /posts/:id/comments                                                */
+  /* -------------------------------------------------------------------------- */
+
+  describe('POST /posts/:id/comments', () => {
+    it('deve adicionar comentário com sucesso - Professor', async () => {
+      const res = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário de teste do professor'
+        });
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.comments).toHaveLength(1);
+      expect(res.body.comments[0].author).toBe('Matheus');
+      expect(res.body.comments[0].role).toBe('professor');
+      expect(res.body.comments[0].comment).toBe('Comentário de teste do professor');
+      expect(res.body.comments[0]).toHaveProperty('createdAt');
+      expect(res.body.comments[0]).toHaveProperty('_id');
+    });
+
+    it('deve adicionar comentário com sucesso - Aluno', async () => {
+      const res = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenAluno}`)
+        .send({
+          comment: 'Comentário de teste do aluno'
+        });
+
+      expect(res.statusCode).toBe(201);
+      expect(res.body.comments).toHaveLength(1);
+      expect(res.body.comments[0].author).toBe('Pedro');
+      expect(res.body.comments[0].role).toBe('aluno');
+      expect(res.body.comments[0].comment).toBe('Comentário de teste do aluno');
+    });
+
+    it('deve retornar 400 se comentário estiver vazio', async () => {
+      const res = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: ''
+        });
+
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('deve retornar 404 se post não existir', async () => {
+      const fakeId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .post(`/posts/${fakeId}/comments`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário de teste'
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Post não encontrado.');
+    });
+
+    it('deve retornar 401 sem token', async () => {
+      const res = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .send({
+          comment: 'Comentário de teste'
+        });
+
+      expect(res.statusCode).toBe(401);
+    });
+
+    it('deve retornar 500 se ocorrer erro interno ao adicionar comentário', async () => {
+      // Mock do método save para gerar erro
+      jest.spyOn(Post.prototype, 'save').mockImplementationOnce(() => {
+        throw new Error('Erro simulado no save');
+      });
+
+      const res = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário de teste'
+        });
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.message).toBe('Erro ao adicionar comentário.');
+    });
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*  PUT /posts/:id/comments/:commentId                                       */
+  /* -------------------------------------------------------------------------- */
+
+  describe('PUT /posts/:id/comments/:commentId', () => {
+    let commentId;
+
+    beforeEach(async () => {
+      // Adicionar um comentário primeiro
+      const res = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário original'
+        });
+      commentId = res.body.comments[0]._id;
+    });
+
+    it('deve atualizar comentário próprio com sucesso', async () => {
+      const res = await request(app)
+        .put(`/posts/${postId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário atualizado'
+        });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.comments[0].comment).toBe('Comentário atualizado');
+    });
+
+    it('deve retornar 403 ao tentar atualizar comentário de outro usuário', async () => {
+      const res = await request(app)
+        .put(`/posts/${postId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${tokenAluno}`)
+        .send({
+          comment: 'Tentativa de atualização'
+        });
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.message).toBe('Você só pode atualizar seus próprios comentários.');
+    });
+
+    it('deve retornar 404 se comentário não existir', async () => {
+      const fakeCommentId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .put(`/posts/${postId}/comments/${fakeCommentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário atualizado'
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Comentário não encontrado.');
+    });
+
+    it('deve retornar 404 se post não existir', async () => {
+      const fakePostId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .put(`/posts/${fakePostId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário atualizado'
+        });
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Post não encontrado.');
+    });
+
+    it('deve retornar 400 se comentário estiver vazio', async () => {
+      const res = await request(app)
+        .put(`/posts/${postId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: ''
+        });
+
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('deve retornar 500 se ocorrer erro interno ao atualizar comentário', async () => {
+      // Mock do método save para gerar erro
+      jest.spyOn(Post.prototype, 'save').mockImplementationOnce(() => {
+        throw new Error('Erro simulado no save');
+      });
+
+      const res = await request(app)
+        .put(`/posts/${postId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário atualizado'
+        });
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.message).toBe('Erro ao atualizar comentário.');
+    });
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*  DELETE /posts/:id/comments/:commentId                                    */
+  /* -------------------------------------------------------------------------- */
+
+  describe('DELETE /posts/:id/comments/:commentId', () => {
+    let professorCommentId;
+    let alunoCommentId;
+
+    beforeEach(async () => {
+      // Adicionar comentário do professor
+      const resProfessor = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          comment: 'Comentário do professor'
+        });
+      professorCommentId = resProfessor.body.comments[0]._id;
+
+      // Adicionar comentário do aluno
+      const resAluno = await request(app)
+        .post(`/posts/${postId}/comments`)
+        .set('Authorization', `Bearer ${tokenAluno}`)
+        .send({
+          comment: 'Comentário do aluno'
+        });
+      alunoCommentId = resAluno.body.comments[1]._id;
+    });
+
+    it('deve permitir que autor delete próprio comentário', async () => {
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${professorCommentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe('Comentário deletado com sucesso.');
+      expect(res.body.post.comments).toHaveLength(1);
+    });
+
+    it('deve permitir que professor delete comentário de aluno', async () => {
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${alunoCommentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe('Comentário deletado com sucesso.');
+    });
+
+    it('deve impedir que aluno delete comentário de professor', async () => {
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${professorCommentId}`)
+        .set('Authorization', `Bearer ${tokenAluno}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.message).toBe('Você não tem permissão para deletar este comentário.');
+    });
+
+    it('deve impedir que professor delete comentário de outro professor', async () => {
+      // Criar um token para outro professor
+      const tokenOutroProfessor = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicHJvZmVzc29yIiwibmFtZSI6IkNhcmxvcyIsImlhdCI6MTc1OTAwNDQ5N30.HOS073-oEbGEmSbx48oXd-K91VrtZzgcb_Z88w91SPY';
+      
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${professorCommentId}`)
+        .set('Authorization', `Bearer ${tokenOutroProfessor}`);
+
+      expect(res.statusCode).toBe(403);
+      expect(res.body.message).toBe('Você não tem permissão para deletar este comentário.');
+    });
+
+    it('deve permitir que aluno delete próprio comentário', async () => {
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${alunoCommentId}`)
+        .set('Authorization', `Bearer ${tokenAluno}`);
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe('Comentário deletado com sucesso.');
+    });
+
+    it('deve retornar 404 se comentário não existir', async () => {
+      const fakeCommentId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${fakeCommentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Comentário não encontrado.');
+    });
+
+    it('deve retornar 404 se post não existir', async () => {
+      const fakePostId = new mongoose.Types.ObjectId();
+      const res = await request(app)
+        .delete(`/posts/${fakePostId}/comments/${professorCommentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`);
+
+      expect(res.statusCode).toBe(404);
+      expect(res.body.message).toBe('Post não encontrado.');
+    });
+
+    it('deve retornar 500 se ocorrer erro interno ao deletar comentário', async () => {
+      // Mock do método save para gerar erro
+      jest.spyOn(Post.prototype, 'save').mockImplementationOnce(() => {
+        throw new Error('Erro simulado no save');
+      });
+
+      const res = await request(app)
+        .delete(`/posts/${postId}/comments/${professorCommentId}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`);
+
+      expect(res.statusCode).toBe(500);
+      expect(res.body.message).toBe('Erro ao deletar comentário.');
+    });
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*  Teste para verificar se PUT /posts/:id ignora comments                   */
+  /* -------------------------------------------------------------------------- */
+
+  describe('PUT /posts/:id - deve ignorar comments', () => {
+    it('deve ignorar campo comments no PUT', async () => {
+      // Primeiro, criar um post com um comentário
+      const postWithComment = await Post.create({
+        title: 'Post original',
+        content: 'Conteúdo original',
+        author: 'Autor original',
+        comments: [{
+          author: 'Comentarista',
+          role: 'aluno',
+          comment: 'Comentário existente'
+        }]
+      });
+
+      const res = await request(app)
+        .put(`/posts/${postWithComment._id}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
+        .send({
+          title: 'Post atualizado',
+          content: 'Conteúdo atualizado',
+          author: 'Autor atualizado',
+          comments: [] // Tentando limpar os comments - deve ser ignorado
+        });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.body.title).toBe('Post atualizado');
+      expect(res.body.content).toBe('Conteúdo atualizado');
+      expect(res.body.author).toBe('Autor atualizado');
+      // Os comments originais devem ser preservados
+      expect(res.body.comments).toHaveLength(1);
+      expect(res.body.comments[0].comment).toBe('Comentário existente');
+    });
   });
 
 });
