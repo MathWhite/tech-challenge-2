@@ -7,16 +7,36 @@ const seedPosts = [
     title: 'Introdução ao Node.js',
     content: 'Node.js é um runtime JavaScript poderoso baseado no V8.',
     author: 'Matheus',
+    description: 'Uma introdução completa ao Node.js e suas funcionalidades',
+    comments: [
+      {
+        author: 'João',
+        comment: 'Excelente explicação!'
+      }
+    ]
   },
   {
     title: 'Por que usar MongoDB?',
     content: 'MongoDB é um banco de dados NoSQL flexível e escalável.',
     author: 'João',
+    description: 'Explorando as vantagens do MongoDB em projetos modernos',
+    comments: [
+      {
+        author: 'Maria',
+        comment: 'MongoDB é realmente muito bom!'
+      },
+      {
+        author: 'Pedro',
+        comment: 'Interessante, vou testar!'
+      }
+    ]
   },
   {
     title: 'Testes com Jest',
     content: 'Jest é uma biblioteca incrível para testes em JavaScript.',
     author: 'Maria',
+    description: 'Como implementar testes eficientes com Jest',
+    comments: []
   },
 ];
 

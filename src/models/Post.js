@@ -15,6 +15,26 @@ const PostSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  description: {
+    type: String,
+    trim: true,
+    default: ""
+  },
+  comments: [{
+    author: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    comment: {
+      type: String,
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

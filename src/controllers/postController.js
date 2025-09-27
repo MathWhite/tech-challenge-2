@@ -42,8 +42,8 @@ const createPost = async (req, res) => {
         if (req.user?.role !== 'professor') {
             return res.status(401).json({ message: 'Acesso restrito a professores.' });
         }
-        const { title, content, author, isActive, readTime } = req.body;
-        const newPost = new Post({ title, content, author, isActive, readTime });
+        const { title, content, author, isActive, readTime, description, comments } = req.body;
+        const newPost = new Post({ title, content, author, isActive, readTime, description, comments });
         await newPost.save();
         res.status(201).json(newPost);
     } catch (err) {
@@ -57,11 +57,11 @@ const updatePost = async (req, res) => {
         if (req.user?.role !== 'professor') {
             return res.status(401).json({ message: 'Acesso restrito a professores.' });
         }
-        const { title, content, author, isActive, readTime } = req.body;
+        const { title, content, author, isActive, readTime, description, comments } = req.body;
         const { id } = req.params;
         const updated = await Post.findByIdAndUpdate(
             id,
-            { title, content, author, updatedAt: Date.now(), isActive, readTime },
+            { title, content, author, updatedAt: Date.now(), isActive, readTime, description, comments },
             { new: true }
         );
         if (!updated) {
@@ -98,7 +98,8 @@ const searchPosts = async (req, res) => {
             $or: [
                 { title: new RegExp(query, 'i') },
                 { content: new RegExp(query, 'i') },
-                { author: new RegExp(query, 'i') }
+                { author: new RegExp(query, 'i') },
+                { description: new RegExp(query, 'i') }
             ]
         });
         res.json(posts);

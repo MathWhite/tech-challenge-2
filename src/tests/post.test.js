@@ -59,11 +59,19 @@ describe('POST /posts', () => {
         title: 'Primeiro Post',
         content: 'Conteúdo qualquer',
         author: 'Matheus',
+        description: 'Uma descrição do post',
+        comments: [{
+          author: 'João',
+          comment: 'Muito bom!'
+        }]
       });
 
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('_id');
     expect(res.body.title).toBe('Primeiro Post');
+    expect(res.body.description).toBe('Uma descrição do post');
+    expect(res.body.comments).toHaveLength(1);
+    expect(res.body.comments[0].author).toBe('João');
   });
 
   it('retorna 400 quando faltar campo obrigatório', async () => {
@@ -111,7 +119,9 @@ describe('POST /posts', () => {
       content: 'Conteúdo do post',
       author: 'Autor',
       isActive: true,
-      readTime: 5
+      readTime: 5,
+      description: 'Descrição do post',
+      comments: []
     };
 
     const res = await request(app)
@@ -131,8 +141,8 @@ describe('POST /posts', () => {
 /* -------------------------------------------------------------------------- */
 describe('GET /posts', () => {
   it('lista todos os posts (200)', async () => {
-    await Post.create({ title: 'A', content: 'B', author: 'M', isActive: true });
-    await Post.create({ title: 'C', content: 'D', author: 'N', isActive: false });
+    await Post.create({ title: 'A', content: 'B', author: 'M', isActive: true, description: 'Desc A', comments: [] });
+    await Post.create({ title: 'C', content: 'D', author: 'N', isActive: false, description: 'Desc C', comments: [] });
 
     const res = await request(app).get('/posts').set('Authorization', `Bearer ${tokenProfessor}`);
     expect(res.statusCode).toBe(200);
@@ -140,8 +150,8 @@ describe('GET /posts', () => {
   });
 
   it('lista apenas os posts ativos (200)', async () => {
-    await Post.create({ title: 'A', content: 'B', author: 'M', isActive: true });
-    await Post.create({ title: 'C', content: 'D', author: 'N', isActive: false });
+    await Post.create({ title: 'A', content: 'B', author: 'M', isActive: true, description: 'Desc A', comments: [] });
+    await Post.create({ title: 'C', content: 'D', author: 'N', isActive: false, description: 'Desc C', comments: [] });
 
     const res = await request(app).get('/posts').set('Authorization', `Bearer ${tokenAluno}`);
     expect(res.statusCode).toBe(200);
@@ -169,10 +179,18 @@ describe('GET /posts', () => {
 /* -------------------------------------------------------------------------- */
 describe('GET /posts/:id', () => {
   it('retorna um post existente (200)', async () => {
-    const post = await Post.create({ title: 'A', content: 'B', author: 'M' });
+    const post = await Post.create({ 
+      title: 'A', 
+      content: 'B', 
+      author: 'M', 
+      description: 'Desc A', 
+      comments: [{author: 'João', comment: 'Ótimo!'}] 
+    });
     const res = await request(app).get(`/posts/${post._id}`).set('Authorization', `Bearer ${tokenProfessor}`);
     expect(res.statusCode).toBe(200);
     expect(res.body._id).toBe(post.id);
+    expect(res.body.description).toBe('Desc A');
+    expect(res.body.comments).toHaveLength(1);
   });
 
   it('retorna 404 se id não existir', async () => {
@@ -182,7 +200,14 @@ describe('GET /posts/:id', () => {
   });
 
   it('retorna 404 quando buscar por um id com isActive false (aluno)', async () => {
-    const post = await Post.create({ title: 'A', content: 'B', author: 'M', isActive: false });
+    const post = await Post.create({ 
+      title: 'A', 
+      content: 'B', 
+      author: 'M', 
+      isActive: false, 
+      description: 'Desc A', 
+      comments: [] 
+    });
     const res = await request(app).get(`/posts/${post._id}`).set('Authorization', `Bearer ${tokenAluno}`);
     expect(res.statusCode).toBe(404);
   });
@@ -218,7 +243,13 @@ describe('GET /posts/:id', () => {
 /* -------------------------------------------------------------------------- */
 describe('PUT /posts/:id', () => {
   it('atualiza post existente (200)', async () => {
-    const post = await Post.create({ title: 'Old', content: 'B', author: 'M' });
+    const post = await Post.create({ 
+      title: 'Old', 
+      content: 'B', 
+      author: 'M', 
+      description: 'Desc Old', 
+      comments: [] 
+    });
     const res = await request(app)
       .put(`/posts/${post._id}`)
       .set('Authorization', `Bearer ${tokenProfessor}`)
@@ -226,11 +257,19 @@ describe('PUT /posts/:id', () => {
         title: 'Novo título',
         content: 'Conteúdo atualizado com mais de dez caracteres',
         author: 'Matheus',
-        isActive: false
+        isActive: false,
+        description: 'Nova descrição',
+        comments: [{
+          author: 'Pedro',
+          comment: 'Comentário atualizado!'
+        }]
       });
     expect(res.statusCode).toBe(200);
     expect(res.body.title).toBe('Novo título');
     expect(res.body.isActive).toBe(false);
+    expect(res.body.description).toBe('Nova descrição');
+    expect(res.body.comments).toHaveLength(1);
+    expect(res.body.comments[0].author).toBe('Pedro');
   });
 
   it('retorna 404 ao atualizar id inexistente', async () => {
@@ -278,7 +317,9 @@ describe('PUT /posts/:id', () => {
       content: 'Novo conteúdo',
       author: 'Autor',
       isActive: true,
-      readTime: 4
+      readTime: 4,
+      description: 'Nova descrição',
+      comments: []
     };
 
     const res = await request(app)
@@ -298,7 +339,13 @@ describe('PUT /posts/:id', () => {
 /* -------------------------------------------------------------------------- */
 describe('DELETE /posts/:id', () => {
   it('deleta post existente (200)', async () => {
-    const post = await Post.create({ title: 'A', content: 'B', author: 'M' });
+    const post = await Post.create({ 
+      title: 'A', 
+      content: 'B', 
+      author: 'M', 
+      description: 'Desc A', 
+      comments: [] 
+    });
     const res = await request(app).delete(`/posts/${post._id}`).set('Authorization', `Bearer ${tokenProfessor}`);
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toMatch(/excluído/);
@@ -345,13 +392,47 @@ describe('DELETE /posts/:id', () => {
 /* -------------------------------------------------------------------------- */
 describe('GET /posts/search?q=', () => {
   it('busca posts por termo (200)', async () => {
-    await Post.create({ title: 'Node Rocks', content: '...', author: 'M' });
-    await Post.create({ title: 'Outros', content: 'Nada a ver', author: 'M' });
+    await Post.create({ 
+      title: 'Node Rocks', 
+      content: '...', 
+      author: 'M', 
+      description: 'Sobre Node.js', 
+      comments: [] 
+    });
+    await Post.create({ 
+      title: 'Outros', 
+      content: 'Nada a ver', 
+      author: 'M', 
+      description: 'Outro assunto', 
+      comments: [] 
+    });
 
     const res = await request(app).get('/posts/search?q=node').set('Authorization', `Bearer ${tokenProfessor}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body.length).toBe(1);
+    expect(res.body.length).toBe(1); // Apenas um post contém 'node' no title
     expect(res.body[0].title).toMatch(/Node/i);
+  });
+
+  it('busca posts por description (200)', async () => {
+    await Post.create({ 
+      title: 'Primeiro Post', 
+      content: 'Conteúdo qualquer', 
+      author: 'M', 
+      description: 'Este post fala sobre MongoDB', 
+      comments: [] 
+    });
+    await Post.create({ 
+      title: 'Segundo Post', 
+      content: 'Outro conteúdo', 
+      author: 'N', 
+      description: 'Este post fala sobre Node.js', 
+      comments: [] 
+    });
+
+    const res = await request(app).get('/posts/search?q=MongoDB').set('Authorization', `Bearer ${tokenProfessor}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(1);
+    expect(res.body[0].description).toMatch(/MongoDB/i);
   });
 
   it('retorna lista vazia quando não encontra', async () => {
@@ -385,6 +466,86 @@ describe('GET /posts/search?q=', () => {
     expect(res.body.message).toMatch(/Erro na busca/i);
   });
 
+});
+
+
+/* -------------------------------------------------------------------------- */
+/*  Testes para novos campos: description e comments                          */
+/* -------------------------------------------------------------------------- */
+describe('Novos campos - description e comments', () => {
+  it('cria post apenas com description', async () => {
+    const res = await request(app)
+      .post('/posts')
+      .set('Authorization', `Bearer ${tokenProfessor}`)
+      .send({
+        title: 'Post com description',
+        content: 'Conteúdo do post',
+        author: 'Teste',
+        description: 'Uma descrição bem detalhada'
+      });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.description).toBe('Uma descrição bem detalhada');
+    expect(res.body.comments).toEqual([]);
+  });
+
+  it('cria post apenas com comments', async () => {
+    const res = await request(app)
+      .post('/posts')
+      .set('Authorization', `Bearer ${tokenProfessor}`)
+      .send({
+        title: 'Post com comments',
+        content: 'Conteúdo do post',
+        author: 'Teste',
+        comments: [
+          {
+            author: 'João',
+            comment: 'Primeiro comentário'
+          },
+          {
+            author: 'Maria',
+            comment: 'Segundo comentário'
+          }
+        ]
+      });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.comments).toHaveLength(2);
+    expect(res.body.comments[0].author).toBe('João');
+    expect(res.body.comments[1].comment).toBe('Segundo comentário');
+    expect(res.body.description).toBe('');
+  });
+
+  it('busca por description funciona corretamente', async () => {
+    await Post.create({
+      title: 'Post Teste',
+      content: 'Conteúdo qualquer',
+      author: 'Autor',
+      description: 'MongoDB é fantástico'
+    });
+
+    const res = await request(app)
+      .get('/posts/search?q=MongoDB')
+      .set('Authorization', `Bearer ${tokenProfessor}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].description).toMatch(/MongoDB/i);
+  });
+
+  it('retorna erro 400 quando comments não é array', async () => {
+    const res = await request(app)
+      .post('/posts')
+      .set('Authorization', `Bearer ${tokenProfessor}`)
+      .send({
+        title: 'Post inválido',
+        content: 'Conteúdo do post',
+        author: 'Teste',
+        comments: 'não é um array'
+      });
+
+    expect(res.statusCode).toBe(400);
+  });
 });
 
 

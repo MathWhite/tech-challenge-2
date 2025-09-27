@@ -35,6 +35,25 @@ const auth = require('../middlewares/auth');
  *         author:
  *           type: string
  *           description: Autor do post
+ *         description:
+ *           type: string
+ *           description: Descrição do post
+ *         comments:
+ *           type: array
+ *           description: Lista de comentários do post
+ *           items:
+ *             type: object
+ *             properties:
+ *               author:
+ *                 type: string
+ *                 description: Autor do comentário
+ *               comment:
+ *                 type: string
+ *                 description: Conteúdo do comentário
+ *               createdAt:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Data de criação do comentário
  *         isActive:
  *           type: boolean
  *           description: Indica se o post está ativo (visível para alunos)
@@ -54,6 +73,11 @@ const auth = require('../middlewares/auth');
  *         title: Meu Post
  *         content: Conteúdo interessante
  *         author: Matheus
+ *         description: Uma breve descrição do post
+ *         comments:
+ *           - author: joazinho
+ *             comment: Sensacional!
+ *             createdAt: 2023-07-15T10:30:00Z
  *         isActive: true
  *         readTime: 3 min
  *         createdAt: 2023-07-15T10:00:00Z
