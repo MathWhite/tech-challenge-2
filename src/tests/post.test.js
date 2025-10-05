@@ -469,6 +469,63 @@ describe('GET /posts/search?q=', () => {
     expect(res.body.message).toMatch(/Acesso restrito a professores e alunos./i);
   });
 
+  it('aluno deve ver apenas posts ativos na busca', async () => {
+    await Post.create({
+      title: 'Guia Node.js',
+      content: 'Conteúdo A',
+      author: 'Autor',
+      description: 'Aprenda Node.js do zero',
+      isActive: true,
+      comments: []
+    });
+    await Post.create({
+      title: 'Node.js Avançado',
+      content: 'Conteúdo B',
+      author: 'Autor',
+      description: 'Tópicos avançados de Node.js',
+      isActive: false,
+      comments: []
+    });
+
+    const res = await request(app)
+      .get('/posts/search?q=node')
+      .set('Authorization', `Bearer ${tokenAluno}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(1);
+    expect(res.body[0].title).toMatch(/Guia Node\.js/i);
+    // Garante que nenhum item retornado tenha isActive false
+    expect(res.body.every(p => p.isActive === true)).toBe(true);
+  });
+
+  it('professor deve ver ativos e inativos na busca', async () => {
+    await Post.create({
+      title: 'Docker para Node.js',
+      content: 'Conteúdo A',
+      author: 'Autor',
+      description: 'Guia de Docker com Node.js',
+      isActive: true,
+      comments: []
+    });
+    await Post.create({
+      title: 'Node.js e MongoDB',
+      content: 'Conteúdo B',
+      author: 'Autor',
+      description: 'Integração com MongoDB',
+      isActive: false,
+      comments: []
+    });
+
+    const res = await request(app)
+      .get('/posts/search?q=node')
+      .set('Authorization', `Bearer ${tokenProfessor}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(2);
+    // Deve conter pelo menos um inativo
+    expect(res.body.some(p => p.isActive === false)).toBe(true);
+  });
+
   it('retorna 500 se der erro interno na busca de posts', async () => {
     jest.spyOn(Post, 'find').mockImplementation(() => {
       throw new Error('Erro simulado');

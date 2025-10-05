@@ -85,6 +85,7 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiTWF0
 - O token de **aluno** possui **acesso restrito** apenas às rotas:
   - `GET /posts` → Retorna **apenas posts ativos**
   - `GET /posts/:id` → Retorna o post apenas se estiver **ativo**
+  - `GET /posts/search?q=` → Busca permitida, retornando **apenas posts ativos**
 
 Todos os demais endpoints retornarão `401 Unauthorized` quando acessados com o token de aluno.
 
@@ -122,6 +123,8 @@ A documentação inclui:
 | PUT    | /posts/:id         | Atualiza uma postagem existente     |
 | DELETE | /posts/:id         | Exclui uma postagem existente       |
 | GET    | /posts/search?q=   | Busca por título, conteúdo ou autor |
+
+Observação: quando autenticado como aluno, a busca retorna apenas posts com `isActive: true`.
 
 ## 🛠️ Estrutura do Projeto
 

@@ -96,14 +96,23 @@ const searchPosts = async (req, res) => {
             return res.status(401).json({ message: 'Acesso restrito a professores e alunos.' });
         }
         const query = req.query.q;
-        const posts = await Post.find({
+        const isProfessor = req.user?.role === 'professor';
+
+        const criteria = {
             $or: [
                 { title: new RegExp(query, 'i') },
                 { content: new RegExp(query, 'i') },
                 { author: new RegExp(query, 'i') },
                 { description: new RegExp(query, 'i') }
             ]
-        });
+        };
+
+        // Regra: alunos só podem ver posts ativos na busca
+        if (!isProfessor) {
+            criteria.isActive = true;
+        }
+
+        const posts = await Post.find(criteria);
         res.json(posts);
     } catch (err) {
         res.status(500).json({ message: 'Erro na busca.' });
