@@ -91,8 +91,9 @@ const deletePost = async (req, res) => {
 // [GET] /posts/search?q=termo - Busca
 const searchPosts = async (req, res) => {
     try {
-        if (req.user?.role !== 'professor') {
-            return res.status(401).json({ message: 'Acesso restrito a professores.' });
+        // Permite acesso tanto para professores quanto para alunos
+        if (req.user?.role !== 'professor' && req.user?.role !== 'aluno') {
+            return res.status(401).json({ message: 'Acesso restrito a professores e alunos.' });
         }
         const query = req.query.q;
         const posts = await Post.find({

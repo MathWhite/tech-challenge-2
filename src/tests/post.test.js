@@ -17,6 +17,7 @@ let mongoServer;
 process.env.JWT_SECRET = 'secreta123';
 const tokenProfessor = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicHJvZmVzc29yIiwibmFtZSI6Ik1hdGhldXMiLCJpYXQiOjE3NTI2NjgzMzZ9.BQUrflZw8QktIBmqOVWiPvu0jDowJl_-SiBr9yCyPv0';
 const tokenAluno = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiUGVkcm8iLCJpYXQiOjE3NTkwMDI5MDd9.j11EStIjOvOBVOwg9FDcr-Fu4dzbETn1xIFjUd7Lip0';
+const tokenInvalido = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiQWRtaW4iLCJpYXQiOjE3NTkwMDI5MDd9.7obQ9UVi18Nh3eFBbDRDzzzOz2c4RtpQEw2BDZ-vieg';
 
 
 /* -------------------------------------------------------------------------- */
@@ -447,10 +448,25 @@ describe('GET /posts/search?q=', () => {
     expect(res.statusCode).toBe(401);
   });
 
-  it('retorna 401 quando for um token de aluno', async () => {
-    const res = await request(app).get('/posts/search?q=semresultado').set('Authorization', `Bearer ${tokenAluno}`);
+  it('permite acesso para token de aluno (200)', async () => {
+    await Post.create({ 
+      title: 'Post para Aluno', 
+      content: 'Conteúdo para teste', 
+      author: 'M', 
+      description: 'Teste com aluno', 
+      comments: [] 
+    });
+
+    const res = await request(app).get('/posts/search?q=Aluno').set('Authorization', `Bearer ${tokenAluno}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(1);
+    expect(res.body[0].title).toMatch(/Aluno/i);
+  });
+
+  it('retorna 401 quando o token tem role não autorizado', async () => {
+    const res = await request(app).get('/posts/search?q=teste').set('Authorization', `Bearer ${tokenInvalido}`);
     expect(res.statusCode).toBe(401);
-    expect(res.body.message).toMatch(/Acesso restrito a professores./i);
+    expect(res.body.message).toMatch(/Acesso restrito a professores e alunos./i);
   });
 
   it('retorna 500 se der erro interno na busca de posts', async () => {
