@@ -115,16 +115,44 @@ A documentação inclui:
 
 ## 📂 Endpoints REST
 
-| Método | Rota               | Descrição                           |
-|--------|--------------------|-------------------------------------|
-| GET    | /posts             | Lista todas as postagens            |
-| GET    | /posts/:id         | Lê uma postagem específica          |
-| POST   | /posts             | Cria uma nova postagem              |
-| PUT    | /posts/:id         | Atualiza uma postagem existente     |
-| DELETE | /posts/:id         | Exclui uma postagem existente       |
-| GET    | /posts/search?q=   | Busca por título, conteúdo ou autor |
+### Posts
+
+| Método | Rota               | Descrição                           | Acesso          |
+|--------|--------------------|-------------------------------------|-----------------|
+| GET    | /posts             | Lista todas as postagens            | Professor/Aluno |
+| GET    | /posts/:id         | Lê uma postagem específica          | Professor/Aluno |
+| POST   | /posts             | Cria uma nova postagem              | Professor       |
+| PUT    | /posts/:id         | Atualiza uma postagem existente     | Professor       |
+| DELETE | /posts/:id         | Exclui uma postagem existente       | Professor       |
+| GET    | /posts/search?q=   | Busca por título, conteúdo ou autor | Professor/Aluno |
 
 Observação: quando autenticado como aluno, a busca retorna apenas posts com `isActive: true`.
+
+### Teachers (Professores)
+
+| Método | Rota               | Descrição                           | Acesso          |
+|--------|--------------------|-------------------------------------|-----------------|
+| GET    | /teachers          | Lista todos os professores          | Professor       |
+| GET    | /teachers/:id      | Lê um professor específico          | Professor       |
+| POST   | /teachers          | Cria um novo professor              | Professor       |
+| PUT    | /teachers/:id      | Atualiza um professor existente     | Professor       |
+| DELETE | /teachers/:id      | Exclui um professor                 | Professor       |
+
+### Students (Alunos)
+
+| Método | Rota               | Descrição                           | Acesso          |
+|--------|--------------------|-------------------------------------|-----------------|
+| GET    | /students          | Lista todos os alunos               | Professor       |
+| GET    | /students/:id      | Lê um aluno específico              | Professor       |
+| POST   | /students          | Cria um novo aluno                  | Professor       |
+| PUT    | /students/:id      | Atualiza um aluno existente         | Professor       |
+| DELETE | /students/:id      | Exclui um aluno                     | Professor       |
+
+**Observações importantes:**
+- Todas as rotas de Teachers e Students são **restritas a professores**
+- Alunos **não têm acesso** aos endpoints de gerenciamento de usuários
+- Senhas são armazenadas com **hash bcrypt** e nunca retornadas nas respostas
+- Emails devem ser **únicos** no sistema
 
 ## 🛠️ Estrutura do Projeto
 
