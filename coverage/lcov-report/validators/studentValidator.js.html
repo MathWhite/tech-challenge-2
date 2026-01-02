@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for validators/postValidator.js</title>
+    <title>Code coverage report for validators/studentValidator.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">validators</a> postValidator.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">validators</a> studentValidator.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
@@ -113,7 +113,41 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -143,75 +177,68 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { body } = require('express-validator');
 &nbsp;
-const postValidationRules = [
-    body('title')
+const studentValidationRules = [
+    body('name')
         .trim()
         .notEmpty()
-        .withMessage('Título é obrigatório'),
-    body('content')
-        .notEmpty()
-        .withMessage('Conteúdo é obrigatório'),
-    body('author')
+        .withMessage('Nome é obrigatório')
+        .isLength({ min: 3 })
+        .withMessage('Nome deve ter no mínimo 3 caracteres'),
+    body('email')
         .trim()
         .notEmpty()
-        .withMessage('Autor é obrigatório'),
-    body('description')
+        .withMessage('Email é obrigatório')
+        .isEmail()
+        .withMessage('Email inválido')
+        .normalizeEmail(),
+    body('password')
+        .notEmpty()
+        .withMessage('Senha é obrigatória')
+        .isLength({ min: 6 })
+        .withMessage('Senha deve ter no mínimo 6 caracteres'),
+    body('status')
         .optional()
-        .trim(),
-    body('comments')
-        .optional()
-        .isArray()
-        .withMessage('Comments deve ser um array'),
-    body('comments.*.author')
-        .if(body('comments').exists())
-        .trim()
-        .notEmpty()
-        .withMessage('Autor do comentário é obrigatório'),
-    body('comments.*.comment')
-        .if(body('comments').exists())
-        .notEmpty()
-        .withMessage('Conteúdo do comentário é obrigatório')
+        .isIn(['ativo', 'inativo'])
+        .withMessage('Status deve ser "ativo" ou "inativo"'),
 ];
 &nbsp;
-// Validador para adicionar comentário
-const commentValidationRules = [
-    body('comment')
+const studentUpdateValidationRules = [
+    body('name')
+        .optional()
         .trim()
         .notEmpty()
-        .withMessage('Conteúdo do comentário é obrigatório')
-        .isLength({ min: 1, max: 1000 })
-        .withMessage('Comentário deve ter entre 1 e 1000 caracteres')
+        .withMessage('Nome não pode ser vazio')
+        .isLength({ min: 3 })
+        .withMessage('Nome deve ter no mínimo 3 caracteres'),
+    body('email')
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage('Email não pode ser vazio')
+        .isEmail()
+        .withMessage('Email inválido')
+        .normalizeEmail(),
+    body('password')
+        .optional()
+        .notEmpty()
+        .withMessage('Senha não pode ser vazia')
+        .isLength({ min: 6 })
+        .withMessage('Senha deve ter no mínimo 6 caracteres'),
+    body('status')
+        .optional()
+        .isIn(['ativo', 'inativo'])
+        .withMessage('Status deve ser "ativo" ou "inativo"'),
 ];
-&nbsp;
-// Validador para atualizar comentário (mesma regra)
-const updateCommentValidationRules = commentValidationRules;
 &nbsp;
 module.exports = { 
-    postValidationRules,
-    commentValidationRules,
-    updateCommentValidationRules
+    studentValidationRules,
+    studentUpdateValidationRules
 };
 &nbsp;</pre></td></tr></table></pre>
 
