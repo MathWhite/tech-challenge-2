@@ -9,6 +9,10 @@ const authRoutes = require('../routes/authRoutes');
 const Post = require('../models/Post');
 const Teacher = require('../models/Teacher');
 const Student = require('../models/Student');
+const crypto = require('crypto');
+
+// Helper para criar hash SHA-256 da palavra-passe
+const hashPalavraPasse = (palavra) => crypto.createHash('sha256').update(palavra).digest('hex');
 
 let app;
 let mongoServer;
@@ -65,7 +69,7 @@ beforeEach(async () => {
     .send({
       email: 'admin@escola.com',
       senha: 'admin123',
-      'palavra-passe': 'secreta123'
+      'palavra-passe': hashPalavraPasse('secreta123')
     });
   tokenProfessor = resProfessor.body.token;
 
@@ -75,7 +79,7 @@ beforeEach(async () => {
     .send({
       email: 'aluno@escola.com',
       senha: 'aluno123',
-      'palavra-passe': 'secreta123'
+      'palavra-passe': hashPalavraPasse('secreta123')
     });
   tokenAluno = resAluno.body.token;
 });

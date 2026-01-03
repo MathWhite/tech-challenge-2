@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const Teacher = require('../models/Teacher');
 const Student = require('../models/Student');
 
@@ -7,8 +8,11 @@ const login = async (req, res) => {
   try {
     const { email, senha, 'palavra-passe': palavraPasse } = req.body;
 
-    // Validar palavra-passe
-    if (palavraPasse !== 'secreta123') {
+    // Validar palavra-passe usando SHA-256
+    // O frontend deve enviar o hash SHA-256 de "secreta123"
+    const palavraPasseCorreta = crypto.createHash('sha256').update('secreta123').digest('hex');
+    
+    if (palavraPasse !== palavraPasseCorreta) {
       return res.status(401).json({ message: 'Palavra-passe incorreta.' });
     }
 

@@ -4,6 +4,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const authRoutes = require('../routes/authRoutes');
 const Teacher = require('../models/Teacher');
@@ -11,6 +12,9 @@ const Student = require('../models/Student');
 
 let app;
 let mongoServer;
+
+// Helper para criar hash SHA-256 da palavra-passe
+const hashPalavraPasse = (palavra) => crypto.createHash('sha256').update(palavra).digest('hex');
 
 /* -------------------------------------------------------------------------- */
 /*  Setup global                                                               */
@@ -57,7 +61,7 @@ describe('POST /login - Casos de sucesso', () => {
       .send({
         email: 'admin@escola.com',
         senha: 'admin123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(200);
@@ -92,7 +96,7 @@ describe('POST /login - Casos de sucesso', () => {
       .send({
         email: 'aluno@escola.com',
         senha: 'aluno123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(200);
@@ -123,7 +127,7 @@ describe('POST /login - Casos de sucesso', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(200);
@@ -158,7 +162,7 @@ describe('POST /login - Casos de sucesso', () => {
       .send({
         email: sameEmail,
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(200);
@@ -175,7 +179,7 @@ describe('POST /login - Validação de campos obrigatórios', () => {
       .post('/login')
       .send({
         senha: 'admin',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(400);
@@ -194,7 +198,7 @@ describe('POST /login - Validação de campos obrigatórios', () => {
       .post('/login')
       .send({
         email: 'admin',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(400);
@@ -243,7 +247,7 @@ describe('POST /login - Validação de campos obrigatórios', () => {
       .send({
         email: '',
         senha: 'admin',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(400);
@@ -255,7 +259,7 @@ describe('POST /login - Validação de campos obrigatórios', () => {
       .send({
         email: 'admin',
         senha: '',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(400);
@@ -284,7 +288,7 @@ describe('POST /login - Validação de palavra-passe', () => {
       .send({
         email: 'admin',
         senha: 'admin',
-        'palavra-passe': 'senhaerrada'
+        'palavra-passe': hashPalavraPasse('senhaerrada')
       });
 
     expect(res.statusCode).toBe(401);
@@ -297,7 +301,7 @@ describe('POST /login - Validação de palavra-passe', () => {
       .send({
         email: 'admin',
         senha: 'admin',
-        'palavra-passe': 'secreta12'
+        'palavra-passe': hashPalavraPasse('secreta12')
       });
 
     expect(res.statusCode).toBe(401);
@@ -310,7 +314,7 @@ describe('POST /login - Validação de palavra-passe', () => {
       .send({
         email: 'admin',
         senha: 'admin',
-        'palavra-passe': 'SECRETA123'
+        'palavra-passe': hashPalavraPasse('SECRETA123')
       });
 
     expect(res.statusCode).toBe(401);
@@ -328,7 +332,7 @@ describe('POST /login - Validação de credenciais', () => {
       .send({
         email: 'usuario_inexistente@escola.com',
         senha: 'qualquersenha',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(401);
@@ -349,7 +353,7 @@ describe('POST /login - Validação de credenciais', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senhaerrada',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(401);
@@ -370,7 +374,7 @@ describe('POST /login - Validação de credenciais', () => {
       .send({
         email: 'aluno@escola.com',
         senha: 'senhaerrada',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(401);
@@ -391,7 +395,7 @@ describe('POST /login - Validação de credenciais', () => {
       .send({
         email: 'inativo@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(401);
@@ -412,7 +416,7 @@ describe('POST /login - Validação de credenciais', () => {
       .send({
         email: 'aluno_inativo@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(401);
@@ -442,7 +446,7 @@ describe('POST /login - Casos de erro', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(500);
@@ -468,7 +472,7 @@ describe('POST /login - Casos de erro', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(500);
@@ -494,7 +498,7 @@ describe('POST /login - Casos edge', () => {
       .send({
         email: '  prof@escola.com  ',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     // Deve funcionar pois o validator faz trim no email
@@ -523,7 +527,7 @@ describe('POST /login - Casos edge', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123',
+        'palavra-passe': hashPalavraPasse('secreta123'),
         campoExtra: 'valor qualquer',
         outroExtra: 123
       });
@@ -551,7 +555,7 @@ describe('POST /login - Estrutura de resposta', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(200);
@@ -580,7 +584,7 @@ describe('POST /login - Estrutura de resposta', () => {
       .send({
         email: 'prof@escola.com',
         senha: 'senha123',
-        'palavra-passe': 'secreta123'
+        'palavra-passe': hashPalavraPasse('secreta123')
       });
 
     expect(res.statusCode).toBe(200);
