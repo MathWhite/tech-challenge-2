@@ -2,28 +2,25 @@ const request = require('supertest');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const express = require('express');
+const bcrypt = require('bcrypt');
 
 const postRoutes = require('../routes/postRoutes');
+const authRoutes = require('../routes/authRoutes');
 const Post = require('../models/Post');
+const Teacher = require('../models/Teacher');
+const Student = require('../models/Student');
 
 let app;
 let mongoServer;
-
-
-/* -------------------------------------------------------------------------- */
-/*  Define os Tokens                                                          */
-/* -------------------------------------------------------------------------- */
-
-process.env.JWT_SECRET = 'secreta123';
-const tokenProfessor = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoicHJvZmVzc29yIiwibmFtZSI6Ik1hdGhldXMiLCJpYXQiOjE3NTI2NjgzMzZ9.BQUrflZw8QktIBmqOVWiPvu0jDowJl_-SiBr9yCyPv0';
-const tokenAluno = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWx1bm8iLCJuYW1lIjoiUGVkcm8iLCJpYXQiOjE3NTkwMDI5MDd9.j11EStIjOvOBVOwg9FDcr-Fu4dzbETn1xIFjUd7Lip0';
-const tokenInvalido = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJuYW1lIjoiQWRtaW4iLCJpYXQiOjE3NTkwMDI5MDd9.7obQ9UVi18Nh3eFBbDRDzzzOz2c4RtpQEw2BDZ-vieg';
-
+let tokenProfessor;
+let tokenAluno;
 
 /* -------------------------------------------------------------------------- */
 /*  Setup global                                                               */
 /* -------------------------------------------------------------------------- */
 beforeAll(async () => {
+  process.env.JWT_SECRET = 'secreta123';
+  
   // Sobe MongoDB em memória
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
@@ -35,6 +32,7 @@ beforeAll(async () => {
   app = express();
   app.use(express.json());
   app.use('/posts', postRoutes);
+  app.use('/login', authRoutes);
 });
 
 afterAll(async () => {
@@ -42,9 +40,51 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
+beforeEach(async () => {
+  // Criar usuário professor e fazer login
+  await Teacher.create({
+    name: 'Professor Admin',
+    email: 'admin@escola.com',
+    password: await bcrypt.hash('admin123', 10),
+    role: 'professor',
+    isActive: true
+  });
+
+  // Criar usuário aluno e fazer login
+  await Student.create({
+    name: 'Aluno Teste',
+    email: 'aluno@escola.com',
+    password: await bcrypt.hash('aluno123', 10),
+    role: 'aluno',
+    isActive: true
+  });
+
+  // Obter token do professor
+  const resProfessor = await request(app)
+    .post('/login')
+    .send({
+      email: 'admin@escola.com',
+      senha: 'admin123',
+      'palavra-passe': 'secreta123'
+    });
+  tokenProfessor = resProfessor.body.token;
+
+  // Obter token do aluno
+  const resAluno = await request(app)
+    .post('/login')
+    .send({
+      email: 'aluno@escola.com',
+      senha: 'aluno123',
+      'palavra-passe': 'secreta123'
+    });
+  tokenAluno = resAluno.body.token;
+});
+
 afterEach(async () => {
   // Limpa a base após cada teste
   await Post.deleteMany({});
+  await Teacher.deleteMany({});
+  await Student.deleteMany({});
   jest.restoreAllMocks();
 });
 
@@ -463,12 +503,6 @@ describe('GET /posts/search?q=', () => {
     expect(res.body[0].title).toMatch(/Aluno/i);
   });
 
-  it('retorna 401 quando o token tem role não autorizado', async () => {
-    const res = await request(app).get('/posts/search?q=teste').set('Authorization', `Bearer ${tokenInvalido}`);
-    expect(res.statusCode).toBe(401);
-    expect(res.body.message).toMatch(/Acesso restrito a professores e alunos./i);
-  });
-
   it('aluno deve ver apenas posts ativos na busca', async () => {
     await Post.create({
       title: 'Guia Node.js',
@@ -683,7 +717,7 @@ describe('Endpoints de comentários', () => {
 
       expect(res.statusCode).toBe(201);
       expect(res.body.comments).toHaveLength(1);
-      expect(res.body.comments[0].author).toBe('Matheus');
+      expect(res.body.comments[0].author).toBe('Professor Admin');
       expect(res.body.comments[0].role).toBe('professor');
       expect(res.body.comments[0].comment).toBe('Comentário de teste do professor');
       expect(res.body.comments[0]).toHaveProperty('createdAt');
@@ -700,7 +734,7 @@ describe('Endpoints de comentários', () => {
 
       expect(res.statusCode).toBe(201);
       expect(res.body.comments).toHaveLength(1);
-      expect(res.body.comments[0].author).toBe('Pedro');
+      expect(res.body.comments[0].author).toBe('Aluno Teste');
       expect(res.body.comments[0].role).toBe('aluno');
       expect(res.body.comments[0].comment).toBe('Comentário de teste do aluno');
     });

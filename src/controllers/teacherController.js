@@ -1,4 +1,5 @@
 const Teacher = require('../models/Teacher');
+const Student = require('../models/Student');
 const bcrypt = require('bcrypt');
 
 // [GET] /teachers - Lista todos os professores
@@ -42,11 +43,16 @@ const createTeacher = async (req, res) => {
             return res.status(403).json({ message: 'Acesso restrito a professores.' });
         }
 
-        const { name, email, password, status } = req.body;
+        const { name, email, password, isActive } = req.body;
 
-        // Verificar se o email já existe
+        // Verificar se o email já existe em Teacher ou Student
         const existingTeacher = await Teacher.findOne({ email });
         if (existingTeacher) {
+            return res.status(400).json({ message: 'Email já cadastrado.' });
+        }
+
+        const existingStudent = await Student.findOne({ email });
+        if (existingStudent) {
             return res.status(400).json({ message: 'Email já cadastrado.' });
         }
 
@@ -57,7 +63,7 @@ const createTeacher = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            status: status || 'ativo',
+            isActive: isActive !== undefined ? isActive : true,
             role: 'professor'
         });
 
@@ -81,25 +87,21 @@ const updateTeacher = async (req, res) => {
         }
 
         const { id } = req.params;
-        const { name, email, password, status } = req.body;
+        const { name, email, password, isActive } = req.body;
 
         const teacher = await Teacher.findById(id);
         if (!teacher) {
             return res.status(404).json({ message: 'Professor não encontrado.' });
         }
 
-        // Verificar se o email já está em uso por outro professor
+        // Email é imutável - não pode ser alterado
         if (email && email !== teacher.email) {
-            const existingTeacher = await Teacher.findOne({ email });
-            if (existingTeacher) {
-                return res.status(400).json({ message: 'Email já cadastrado.' });
-            }
+            return res.status(400).json({ message: 'Email não pode ser alterado.' });
         }
 
         // Atualizar campos
         if (name) teacher.name = name;
-        if (email) teacher.email = email;
-        if (status) teacher.status = status;
+        if (isActive !== undefined) teacher.isActive = isActive;
         if (password) {
             teacher.password = await bcrypt.hash(password, 10);
         }

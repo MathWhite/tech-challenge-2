@@ -19,10 +19,10 @@ const teacherValidationRules = [
         .withMessage('Senha é obrigatória')
         .isLength({ min: 6 })
         .withMessage('Senha deve ter no mínimo 6 caracteres'),
-    body('status')
+    body('isActive')
         .optional()
-        .isIn(['ativo', 'inativo'])
-        .withMessage('Status deve ser "ativo" ou "inativo"'),
+        .isBoolean()
+        .withMessage('isActive deve ser um valor booleano'),
 ];
 
 const teacherUpdateValidationRules = [
@@ -47,10 +47,10 @@ const teacherUpdateValidationRules = [
         .withMessage('Senha não pode ser vazia')
         .isLength({ min: 6 })
         .withMessage('Senha deve ter no mínimo 6 caracteres'),
-    body('status')
+    body('isActive')
         .optional()
-        .isIn(['ativo', 'inativo'])
-        .withMessage('Status deve ser "ativo" ou "inativo"'),
+        .isBoolean()
+        .withMessage('isActive deve ser um valor booleano'),
 ];
 
 module.exports = { 

@@ -22,10 +22,9 @@ const StudentSchema = new mongoose.Schema({
     default: 'aluno',
     enum: ['aluno'],
   },
-  status: {
-    type: String,
-    default: 'ativo',
-    enum: ['ativo', 'inativo'],
+  isActive: {
+    type: Boolean,
+    default: true,
   },
   createdAt: {
     type: Date,

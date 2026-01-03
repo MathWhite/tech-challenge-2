@@ -22,10 +22,9 @@ const TeacherSchema = new mongoose.Schema({
     default: 'professor',
     enum: ['professor'],
   },
-  status: {
-    type: String,
-    default: 'ativo',
-    enum: ['ativo', 'inativo'],
+  isActive: {
+    type: Boolean,
+    default: true,
   },
   createdAt: {
     type: Date,

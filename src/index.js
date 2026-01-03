@@ -5,6 +5,7 @@ const cors = require('cors');
 const postRoutes = require('./routes/postRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const studentRoutes = require('./routes/studentRoutes');
+const authRoutes = require('./routes/authRoutes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const app = express();
@@ -18,6 +19,7 @@ app.get('/teste', (req, res) => {
 });
 
 // Rotas
+app.use('/login', authRoutes);
 app.use('/posts', postRoutes);
 app.use('/teachers', teacherRoutes);
 app.use('/students', studentRoutes);
